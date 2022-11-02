@@ -1,0 +1,549 @@
+<!DOCTYPE html>
+<html>
+<head>
+<link rel="stylesheet" media="screen" href = "./static/css/bootstrap.min.css">
+<!-- <link rel="stylesheet" media="screen" href = "./static/css/bootstrap-theme.min.css"> -->
+<link rel="stylesheet" type="text/css" href="./static/css/jquery.highlight-within-textarea.css">
+<link rel="stylesheet" type="text/css" href="./static/css/custom.css">
+<link rel="shortcut icon" href="./static/img/favicon.ico">
+
+<meta name="viewport" content = "width=device-width, initial-scale=1.0">
+<script src="./static/js/jquery.min.js"></script>
+<script src="./static/js/jquery.highlight-within-textarea.js"></script>
+<script src="./static/js/popper.min.js"></script>
+<script src="./static/js/bootstrap.min.js"></script>
+<script src="./static/js/mermaid.min.js"></script>
+</head>
+
+
+<body class = "body">
+    <div class="panel panel-default">
+      <div class="panel-body">
+
+      <h1 class="d-flex justify-content-center"><img src="./static/img/icon.png" alt="icon" style="margin-right:10px">Describing Graph Relations</h1>
+      <div class="start">
+              <div class="description">
+                <hr>
+                <p><b>Please, first read the instructions below carefully.</b></p>
+                <hr>
+                <h2>Introduction</h2>
+                <p>The study aims to improve automatic systems for describing structured data.</p>
+                <p>The task will be to "translate" a structured relation between <span style="background-color: #ffec99">concept A</span> and <span style="background-color: #a3daff">concept B</span> into text. The relation (typically with a short formal name) is illustrated in a simple diagram.</p>
+                <p>Your goal is to <b>reformulate the relation</b> as a text description.</p>
+                <p>Your description should be:
+                <ul>
+                    <li>single sentence</li>
+                    <li>as simple as possible</li>
+                    <li>containing both concepts.</li>
+                </ul>
+                </p>
+                <hr>
+                <h2>Example</h2>
+                <p>Lets see an example:
+                    <div class="mermaid" id="mermaid-start">
+                         graph LR
+                          idx("Richard Feynman") --- idz["birth date"] --> idy("11/05/1918")
+                          click idx callback_insert_start "American theoretical physicist"
+                          click idy callback_insert_start
+                          click idz callback "The date when the person was born"
+                          style idx fill:#ffec99,stroke:#444
+                          style idy fill:#a3daff,stroke:#444
+                          style idz fill:#eee,stroke:#444,stroke-width:1px,stroke-dasharray: 5 5
+                    </div>
+                    <div class="mermaidTooltip" id="mermaidTooltip1">
+                    </div>
+
+                    <div class="instruction-header">Describe the relation from the diagram in one sentence:</div>
+                    <textarea class="response-area-start"></textarea>
+                      <button type="button" class="btn btn-secondary" id="check-btn">Check</button>
+                </p>
+                <p>In this case, a good description could be: "<i>Richard Feynman was born on 11/05/1918.</i>"</p>
+                <p>To show that you understand the task, please <b>type this description</b> (without the quotes) in the text area above and <b>click the <i>Check</i> button</b>.<p>
+                <p>Notice that whenever the <span style="background-color: #ffec99">concept A</span> or the <span style="background-color: #a3daff">concept B</span> appears in the text area, it is highlighted.</p>
+                <p>Within the study, descriptions such as "<i>The birth date of Richard Feynman is 11/05/1918.</i>" or "<i>Richard Feynman's birthday is on 11/05/1918.</i>" would be also acceptable, althought they are less fluent.</p>
+                <p>Please, try to avoid reformulating the concepts unless necessary, e.g. "<i>R. Feynman was born on 11th May 1918.</i>". However, if you are sure that the original concepts would not fit the sentence, in the study you will be able to use the <i>Options...</i> button to edit the concepts.</p>
+                <hr>
+                <h2>Notes</h2>
+                <p>You can use these two tricks to make the task easier:
+                    <ul>
+                        <li>Clicking on <span style="background-color: #ffec99">concept A</span> and <span style="background-color: #a3daff">concept B</span> in the diagram will <b>insert them</b> in the text area.</li>
+                        <li>Hovering over the relation (and the concepts in some cases) shows an <b>additional description</b>. You can use it as a hint in case the name is unclear or ambiguous.</li>
+                    </ul>
+                </p>
+                <p><b>Try it in the box above!</b></p>
+                <hr>
+                <h2>Before you start</h2>
+                <p>
+                Just a last few notes before you begin:
+                <ul>
+                    <li>You will describe <b>{{ num_rel }} relations</b> in total.</li>
+                    <li>Try to make the sentences fluent, but <b>do not add any extra information</b>. Remember that a sentence should contain <b>a verb</b>. Most of the sentences will be quite straightforward.</li>
+                    <li>If you are not sure what a particular relation means, just <b>try your best</b>. You can usually use the relation without fully understanding its meaning. 
+                    <li>Use the <b>Options...</b> button if you have trouble formulating the answer. You can report an unclear example, change the names of the concepts, or report any technical issues. </li>
+                    <li><b>Keep it simple</b> and have fun :-)</li>
+                </ul>
+                </p>
+                <hr>
+              </div>
+                <div class="d-flex justify-content-center">
+                 <button type="button" class="btn btn-secondary" id="start-btn">I understand, lets start!</button>
+                 </div>
+      </div>
+
+      <div class="app" style="display: none">
+
+          <div class="progress" style="display: none">
+            <div class="progress-bar bg-secondary" role="progressbar" style="width: 0%" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100"></div>
+          </div>
+              <div id="alert-area">
+              <div class="alert alert-info alert-dismissible fade show" role="alert">
+                <b>Hints:</b> 
+                <ul>
+                <li>You can <i>click</i> on the concepts to insert them in the text field.</li>
+                <li>You can <i>hover</i> your mouse over the diagram to see additional description(s).</li>
+                <li>Click <i>Options...</i> if you have troubles formulating the answer.</li>
+                </ul>
+                <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                  <span aria-hidden="true">&times;</span>
+                </button>
+              </div>
+          </div>
+
+          {% for item in data %}
+            {% set ex_id = item["ex_id"] %}
+            {% set subj_name =  item["subj_name"] %}
+            {% set subj_desc =  item["subj_desc"] %}
+            {% set obj_name =  item["obj_name"] %}
+            {% set obj_desc =  item["obj_desc"] %}
+            {% set rel_name =  item["rel_name"] %}
+            {% set rel_desc =  item["rel_desc"] %}
+
+            <div id="placeholder{{ loop.index }}" style="display:none">{{ ex_id }}</div>
+            <div class="triplearea" id="triple{{ loop.index }}">
+                <div class="diagram d-flex justify-content-center"> 
+                    <div class="mermaid" id="mermaid{{ loop.index }}">
+                         graph LR
+                          id{{ loop.index }}_1("{{ subj_name }}") --- id{{ loop.index }}_3["{{ rel_name }}"] --> id{{ loop.index }}_2("{{ obj_name }}")
+                          click id{{ loop.index }}_1 callback_insert_a{% if subj_desc is defined %} "{{ subj_desc }}"{% endif %}
+                          click id{{ loop.index }}_2 callback_insert_b{% if obj_desc is defined %} "{{ obj_desc }}"{% endif %}
+                          click id{{ loop.index }}_3 callback "{{ rel_desc }}"
+                          style id{{ loop.index }}_1 fill:#ffec99,stroke:#444
+                          style id{{ loop.index }}_2 fill:#a3daff,stroke:#444
+                          style id{{ loop.index }}_3 fill:#eee,stroke:#444,stroke-width:1px,stroke-dasharray: 5 5
+                    </div>
+                </div>
+            </div>
+            <div class="mermaidTooltip" id="mermaidTooltip2">
+            </div>
+          {% endfor %}
+
+          <div class="instruction-header">Describe the relation from the diagram in one sentence:</div>
+          <textarea class="response-area" ></textarea>
+
+          <div class="d-flex justify-content-center">
+          <div class="btn-group " role="group" aria-label="buttons">
+               <button type="button" class="btn btn-light" id="prev-btn" >&laquo; Previous</button>
+              <button type="button" class="btn btn-secondary" id="submit-btn">Submit</button>
+              <button type="button" class="btn btn-light" id="options-btn">Options...</button>
+
+                </div> 
+            </div>
+
+
+        
+
+         
+
+<!--           <div class="hint">
+            <p><b>Hint:</b> you can <b>click</b> on the concepts to insert them in the text field. You can also <b>hover</b> your mouse over the diagram to see additional description(s). Click <b>More...</b> for advanced options.</p></div> -->
+
+          <div class="extra-panel" style="display: none">
+                <div class="form-check" id="noisy-input">
+                  <input class="form-check-input" type="checkbox" value="" id="noisy-rel-chk">
+                  <label class="form-check-label" for="noisy-rel-chk">
+                    The input is confusing or incomprehensible, the description may be of low quality.<br> <i>This will help us with processing the data.</i>
+                  </label>
+                </div>
+
+                <div> 
+
+                <div class="hint">
+                If you need to reformulate the concepts, update them in the text box and click <b>Update</b>. Use this option <b>only if you think the concepts from the diagram do not fit the sentence</b>. Note that the diagram <b>will not be updated</b>, but the new concepts should be used for your response.
+                </div>
+                    <div class="input-group mb-3">
+                      <div class="input-group-prepend">
+                        <span class="input-group-text" id="concept-a-label">Concept A</span>
+                      </div>
+                      <input type="text" class="form-control" id="concept-a-input" aria-describedby="concept-a-label">
+                      <div class="input-group-append">
+                          <button class="btn btn-outline-secondary" id="concept-a-save" type="button">Update</button>
+                        </div>
+                    </div>
+                    <div class="input-group mb-3">
+                      <div class="input-group-prepend">
+                        <span class="input-group-text" id="concept-b-label">Concept B</span>
+                      </div>
+                      <input type="text" class="form-control" id="concept-b-input" aria-describedby="concept-b-label">
+                      <div class="input-group-append">
+                          <button class="btn btn-outline-secondary" id="concept-b-save" type="button">Update</button>
+                        </div>
+                    </div>
+                </div>
+                <!-- <div class="form-check" id="noisy-input">
+                <input class="form-check-input" type="checkbox" value="" id="noisy-conc-chk">
+                <label class="form-check-label" for="noisy-conc-chk">
+                  I need to reformulate the concepts to make the sentence fluent. <br><i>This will disable the check on the presence of concepts in the description for this example. Note that you should still submit the description.</i>
+                </label>
+                </div> -->
+                <div class="hint">
+                    <p><a href="#" style="color: #888" onclick="reportProblem(); return false;"><b><u>Report a technical problem</u></b></a> with the example (e.g., the diagram did not load).</p>
+                </div>
+            </div>
+          </div>
+
+         
+
+        <div class="success-page" style="display: none">
+            <div class="alert alert-success" role="alert" style="margin-top: 20px">
+              <p>Thank you, your responses were submitted.</p>
+
+              <p>Your Prolific completion code is <b>{{ compl_code }}</b>.</p>
+              <p>Click on the following link to conclude the study and return to Prolific: <b><a href="https://app.prolific.co/submissions/complete?cc={{ compl_code }}" style="color:#155724">https://app.prolific.co/submissions/complete?cc={{ compl_code }}</a></b></p>
+            </div>
+        </div>
+
+        <div class="failure-page" style="display: none">
+            <div class="alert alert-danger" role="alert" style="margin-top: 20px">
+            <p>Sorry, there was a problem with your submission. </p>
+
+            <p>Please, send an e-mail to <i>kasner@ufal.mff.cuni.cz</i> with description of what happened together with your ID: <b>{{ prolific_pid }}</b>.</p>
+
+            <p>We will try to fix the error as soon as possible. We may be also able to mark your study as completed if the answers were recorded.</p>
+            </div>
+        </div>
+
+      </div>
+    </div>
+
+</body>
+</html> 
+
+<script>
+    var step = 1;
+    var steps = {{ num_rel }};
+    var data = {{ data|tojson }};
+    const responses = [];
+    var introduced = false;
+    var problem = false;
+    // var extraPrefix = "";
+
+    var callback_insert_start = function(s){
+        var areaValue = $('.response-area-start').val();
+        $('.response-area-start').val(areaValue + $("#"+s).text());
+        $('.response-area-start').highlightWithinTextarea('update');
+        $('.response-area').focus();
+    }
+    var callback_insert_a = function(s){
+        var areaValue = $('.response-area').val();
+        $('.response-area').val(areaValue + data[step-1]["subj_name"]);
+        $('.response-area').highlightWithinTextarea('update');
+        $('.response-area').focus();
+    }
+    var callback_insert_b = function(s){
+        var areaValue = $('.response-area').val();
+        $('.response-area').val(areaValue + data[step-1]["obj_name"]);
+        $('.response-area').highlightWithinTextarea('update');
+        $('.response-area').focus();
+    }
+
+    mermaid.initialize({
+        startOnLoad : false,
+        securityLevel : 'loose'
+    });
+
+    mermaid.init({
+        securityLevel : 'loose',
+    },  $("#mermaid-start"));
+    mermaid.startOnLoad = false;
+
+    function setFlag(step, flag) {
+        if (!("flags" in data[step])) {
+            data[step]["flags"] = new Set();
+        }
+        data[step]["flags"].add(flag);
+    }
+
+    function getFlags(step, flag) {
+        if (!("flags" in data[step])) {
+            return new Set();
+        }
+        return data[step]["flags"];
+    }
+
+    function setProgressBar(curStep){
+        var percent = parseFloat(100 / (steps-1)) * curStep;
+        percent = percent.toFixed();
+        $(".progress-bar").css("width", percent+"%")
+    }   
+    function successPage() {
+        $(".app").hide()
+        $(".success-page").show()
+    }
+
+    function failurePage(resp) {
+        $(".app").hide()
+        $(".failure-page").show()
+    }
+    function finalize() {
+        var submit_form = {
+            "out" : responses,
+            "prolific_pid" : "{{ prolific_pid }}",
+            "study_id" : "{{ study_id }}",
+            "session_id" : "{{ session_id }}"
+        };
+        var xhr = new XMLHttpRequest();
+        xhr.onreadystatechange = function() {
+            if (xhr.readyState == XMLHttpRequest.DONE) {
+                if (xhr.status === 200) {
+                    successPage();  
+              } else {
+                    failurePage(xhr.responseText);  
+              }
+            }
+        }
+        xhr.open("POST", "{{ prefix }}" + "submit", true);
+        xhr.setRequestHeader('Content-Type', 'application/json');
+        xhr.send(JSON.stringify(submit_form));
+    }
+    function saveResponse() {
+        var responseValue = $('.response-area').val();
+        var flags = "";
+
+        if ("flags" in data[step-1]) {
+            flags = Array.from(data[step-1]["flags"]).join('|');
+        } 
+        responses[step-1] = {
+            "example_id" : $("#placeholder"+step).text(),
+            "response" : responseValue,
+            "subject" : data[step-1]["subj_name"],
+            "relation" : data[step-1]["rel_name"],
+            "object" : data[step-1]["obj_name"],
+            "flags" : flags,
+        };
+    }
+
+    function reportProblem() {
+        problem = true;
+        $('.instruction-header').text("Please, describe the problem in the text box and click on 'Report a problem'. The example will be skipped.");
+        $('#submit-btn').removeClass("btn-secondary").addClass("btn-danger").html("Report a problem");
+    }
+
+    function updateStep(n) {
+        prevStep = step;
+        step += n;
+        setProgressBar(step-1);
+        $("#noisy-rel-chk").prop('checked', false);
+
+        removeProblem();
+
+        if (responses[step-1] !== undefined) {
+            var flags = getFlags(step-1);
+            if (flags.has("NOISY")) {
+                $("#noisy-rel-chk").prop('checked', true);
+            } else if (flags.has("ERROR")) {
+                reportProblem();
+            }
+            $('.response-area').val(responses[step-1]["response"]);
+        } else {
+           $('.response-area').val(''); 
+        }
+        
+        $('.response-area').highlightWithinTextarea('update');
+        $("#triple"+(prevStep)).hide();
+        highlight_area(data[step-1]["subj_name"], data[step-1]["obj_name"]);
+        $("#triple"+step).show();
+        mermaid.init(undefined,  $("#mermaid"+step));
+
+        $("#concept-a-input").val(data[step-1]["subj_name"]);
+        $("#concept-b-input").val(data[step-1]["obj_name"]);
+    }
+
+    function startApp() {
+        // $('.response-area').val('');
+        highlight_area(data[step-1]["subj_name"], data[step-1]["obj_name"]);
+        $(".start").hide();
+        $(".progress").show();
+        $(".app").show();
+        $("#triple"+step).show();
+        $("#mermaidTooltip1").removeClass("mermaidTooltip");
+        mermaid.init(undefined,  $("#mermaid"+step));
+
+        $("#concept-a-input").val(data[step-1]["subj_name"]);
+        $("#concept-b-input").val(data[step-1]["obj_name"]);
+    }
+
+    function showUpdated(oldName, name) {
+        var elem = `
+            <div id="concept-updated" class="alert alert-success fade show" role="alert">
+              The concept was updated (${oldName} → ${name}).
+              <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                <span aria-hidden="true">&times;</span>
+              </button>
+            </div>`
+        $("#alert-area").append(elem);
+    }
+    $("#concept-a-save").click(function(){
+        var name = $('#concept-a-input').val();
+        name = name.replace(/[<>"'\[\]\{\}]+/g, '');
+        oldName = data[step-1]["subj_name"];
+        data[step-1]["subj_name"] = name;
+        setFlag(step-1, "MODIF_SUBJ");
+        updateStep(0);
+        showUpdated(oldName, name);
+    })
+    $("#concept-b-save").click(function(){
+        var name = $('#concept-b-input').val();
+        name = name.replace(/[<>"'\[\]\{\}]+/g, '');
+        oldName = data[step-1]["obj_name"];
+        data[step-1]["obj_name"] = name;
+        setFlag(step-1, "MODIF_OBJ");
+        updateStep(0);
+        showUpdated(oldName, name);
+    })
+
+    $("#check-btn").click(function(){
+        var response = $('.response-area-start').val();
+        const example_response = "Richard Feynman was born on 11/05/1918.";
+
+        if ((response == example_response) || ((response+".") == example_response) ) {
+            $("#check-btn").prop("disabled", true);
+            $("#check-btn").removeClass("btn-secondary");
+            $("#check-btn").addClass("btn-success");
+            $("#check-btn").html('Great, you got it! ✓');
+            introduced = true;
+        } else {
+            alert("In order to pass the check, please write the following sentence in the text area:\n" + example_response)
+        }
+    })
+
+    $("#options-btn").click(function(){
+        $(".extra-panel").toggle();
+    })
+
+    $("#start-btn").click(function(){
+        if (introduced) {
+            startApp();
+        } else {
+            alert("Please, try the example first.");
+        }
+    })
+
+    $(".response-area").keypress(function (e) {
+        if (e.which === 13 && !e.shiftKey) {
+            e.preventDefault();
+        
+            $("#submit-btn").click();
+        }
+    });
+
+    function checkInput() {
+        var areaValue = $('.response-area').val().toLowerCase();
+
+        var subj_name = data[step-1]["subj_name"].toLowerCase();
+        var obj_name = data[step-1]["obj_name"].toLowerCase();
+
+        return (areaValue.includes(subj_name) && 
+            areaValue.includes(obj_name) && 
+            areaValue.length > (subj_name.length + obj_name.length + 2)
+        );
+    }
+
+    function removeProblem() {
+        $('#submit-btn').removeClass("btn-danger").addClass("btn-secondary").html("Submit");
+        problem = false;
+    }
+
+    $("#submit-btn").click(function(){
+        var input_ok = checkInput();
+        extraPrefix = "";
+
+        if (problem) {
+            setFlag(step-1, "ERROR");
+            $('.instruction-header').text("Describe the relation from the diagram in one sentence:");
+            removeProblem();
+            input_ok = true;
+        } else {
+            if (!input_ok) {
+                if (!$('#incorrect-input').length) {
+                    var elem = `
+                        <div id="incorrect-input" class="alert alert-danger fade show" role="alert">
+                          <b>Error: </b> your description either is too short or does not include both concept A (yellow) and concept B (blue). You can reformulate the concepts using the <i>Options...</i> button.
+                          <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                          </button>
+                        </div>`
+                    $("#alert-area").append(elem);
+                }
+                return;
+            }
+            if ($("#noisy-rel-chk").prop('checked')) {
+                setFlag(step-1, "NOISY");
+                $("#noisy-rel-chk").prop('checked', false);
+            }
+        }
+        $(".extra-panel").hide();
+        saveResponse();
+
+        if ($("#incorrect-input").length > 0) {
+            $("#incorrect-input").alert('close');
+        }
+
+        if (step == steps) {
+            finalize();
+        } else {
+            updateStep(1);
+        }
+    })
+
+    $("#next-btn").click(function(){
+        if (step < steps) {
+            updateStep(1);
+        }
+    })
+
+    $("#prev-btn").click(function(){
+        if (step > 1) {
+            updateStep(-1);
+        }
+    })
+
+    function highlight_area(subj_name, obj_name) {
+        $('.response-area').highlightWithinTextarea({
+            highlight: [
+            {
+                highlight: subj_name,
+                className: 'yellow'
+            },
+            {
+                highlight: obj_name,
+                className: 'blue'
+            }
+        ]
+        });
+    }
+
+    $('.response-area-start').highlightWithinTextarea({
+        highlight: [
+        {
+            highlight: "Richard Feynman",
+            className: 'yellow'
+        },
+        {
+            highlight: "11/05/1918",
+            className: 'blue'
+        }
+    ]
+    });
+
+</script>
+
