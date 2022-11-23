@@ -20,7 +20,8 @@ np.random.seed(42)
 Args = namedtuple("Args", "in_file num_rel out_dir compl_code")
 app = Flask(__name__)
 
-server_name="rel2text"
+app.config["static_prefix"] = "./app"
+app.config["prefix"] = "rel2text/app"
 
 logging.basicConfig(format='%(asctime)s - %(levelname)s - %(message)s', level=logging.INFO, datefmt='%H:%M:%S')
     # filename="log/run.log", filemode='a')
@@ -115,13 +116,8 @@ def index():
 
     data_run = prepare_data(data=app.data, num_rel=app.args.num_rel)
 
-    if socket.gethostname() == server_name:
-        prefix = f"/{server_name}/"
-    else:
-        prefix = "/"
-
     return render_template('index.html', data=data_run, num_rel=app.args.num_rel, \
-        prefix=prefix, prolific_pid=prolific_pid, session_id=session_id, study_id=study_id,
+        prefix=app.config["prefix"], static_prefix=app.config["static_prefix"]  , prolific_pid=prolific_pid, session_id=session_id, study_id=study_id,
         compl_code=app.args.compl_code)
 
 

@@ -1,18 +1,18 @@
 <!DOCTYPE html>
 <html>
 <head>
-<link rel="stylesheet" media="screen" href = "./static/css/bootstrap.min.css">
-<!-- <link rel="stylesheet" media="screen" href = "./static/css/bootstrap-theme.min.css"> -->
-<link rel="stylesheet" type="text/css" href="./static/css/jquery.highlight-within-textarea.css">
-<link rel="stylesheet" type="text/css" href="./static/css/custom.css">
-<link rel="shortcut icon" href="./static/img/favicon.ico">
+<link rel="stylesheet" media="screen" href = "{{ static_prefix }}/static/css/bootstrap.min.css">
+<!-- <link rel="stylesheet" media="screen" href = "{{ static_prefix }}/static/css/bootstrap-theme.min.css"> -->
+<link rel="stylesheet" type="text/css" href="{{ static_prefix }}/static/css/jquery.highlight-within-textarea.css">
+<link rel="stylesheet" type="text/css" href="{{ static_prefix }}/static/css/custom.css">
+<link rel="shortcut icon" href="{{ static_prefix }}/static/img/favicon.ico">
 
 <meta name="viewport" content = "width=device-width, initial-scale=1.0">
-<script src="./static/js/jquery.min.js"></script>
-<script src="./static/js/jquery.highlight-within-textarea.js"></script>
-<script src="./static/js/popper.min.js"></script>
-<script src="./static/js/bootstrap.min.js"></script>
-<script src="./static/js/mermaid.min.js"></script>
+<script src="{{ static_prefix }}/static/js/jquery.min.js"></script>
+<script src="{{ static_prefix }}/static/js/jquery.highlight-within-textarea.js"></script>
+<script src="{{ static_prefix }}/static/js/popper.min.js"></script>
+<script src="{{ static_prefix }}/static/js/bootstrap.min.js"></script>
+<script src="{{ static_prefix }}/static/js/mermaid.min.js"></script>
 </head>
 
 
@@ -20,7 +20,7 @@
     <div class="panel panel-default">
       <div class="panel-body">
 
-      <h1 class="d-flex justify-content-center"><img src="./static/img/icon.png" alt="icon" style="margin-right:10px">Describing Graph Relations</h1>
+      <h1 class="d-flex justify-content-center"><img src="{{ static_prefix }}/static/img/icon.png" alt="icon" style="margin-right:10px">Describing Graph Relations</h1>
       <div class="start">
               <div class="description">
                 <hr>
