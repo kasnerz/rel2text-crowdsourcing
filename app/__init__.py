@@ -27,9 +27,9 @@ logging.basicConfig(format='%(asctime)s - %(levelname)s - %(message)s', level=lo
     # filename="log/run.log", filemode='a')
 logger = logging.getLogger(__name__)
 
-fh = logging.FileHandler('log/run.log', mode="a")
-fh.setLevel(logging.DEBUG)
-logger.addHandler(fh)
+# fh = logging.FileHandler('log/run.log', mode="a")
+# fh.setLevel(logging.DEBUG)
+# logger.addHandler(fh)
 
 
 def get_existing_indices():
