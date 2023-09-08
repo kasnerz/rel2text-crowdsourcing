@@ -20,7 +20,7 @@ np.random.seed(42)
 Args = namedtuple("Args", "in_file num_rel out_dir compl_code")
 app = Flask(__name__)
 
-app.config["prefix"] = "./app/"
+app.config["prefix"] = "./rel2text/"
 
 logging.basicConfig(format='%(asctime)s - %(levelname)s - %(message)s', level=logging.INFO, datefmt='%H:%M:%S')
     # filename="log/run.log", filemode='a')
